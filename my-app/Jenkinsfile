@@ -10,9 +10,14 @@ pipeline {
         }
         stage('Build') {
             steps {
-                echo "🔧 Installing dependencies..."
+                echo "🔧 Setting up Python virtual environment and installing dependencies..."
                 dir('my-app') {
-                    sh 'pip install -r requirements.txt || pip install pytest'
+                    sh '''
+                        python3 -m venv venv
+                        . venv/bin/activate
+                        pip install --upgrade pip
+                        pip install -r requirements.txt
+                    '''
                 }
             }
         }
@@ -20,7 +25,10 @@ pipeline {
             steps {
                 echo "✅ Running unit tests..."
                 dir('my-app') {
-                    sh 'pytest test_app.py'
+                    sh '''
+                        . venv/bin/activate
+                        pytest test_app.py
+                    '''
                 }
             }
         }
@@ -32,3 +40,4 @@ pipeline {
         }
     }
 }
+
