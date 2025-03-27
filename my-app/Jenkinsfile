@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "📥 Cloning repository..."
-                git url: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git', branch: 'main'
+                git url: 'https://github.com/daraye-tech/day-1', branch: 'main'
             }
         }
         stage('Build') {
