@@ -5,21 +5,23 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "📥 Cloning repository..."
-                git url: 'https://github.com/daraye-tech/day-1', branch: 'main'
+                git url: 'https://github.com/daraye-tech/day-1.git', branch: 'main'
             }
         }
         stage('Build') {
             steps {
                 echo "🔧 Installing dependencies..."
-                cd my-app
-                sh 'pip install -r requirements.txt || pip install pytest'
+                dir('my-app') {
+                    sh 'pip install -r requirements.txt || pip install pytest'
+                }
             }
         }
         stage('Test') {
             steps {
                 echo "✅ Running unit tests..."
-                cd my-app
-                sh 'pytest test_app.py'
+                dir('my-app') {
+                    sh 'pytest test_app.py'
+                }
             }
         }
         stage('Deliver') {
