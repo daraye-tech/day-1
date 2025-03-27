@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "my-python-app"
+        IMAGE_TAG = "latest"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -17,6 +22,17 @@ pipeline {
                         . venv/bin/activate
                         pip install --upgrade pip
                         pip install -r requirements.txt
+                    '''
+                }
+            }
+        }
+        stage('Build docker image') {
+            steps {
+                echo "🔧 Building Docker image"
+                dir('my-app') {
+                    sh '''
+                        docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                        docker image ls
                     '''
                 }
             }
