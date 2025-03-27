@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "📥 Cloning repository..."
+                git url: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git', branch: 'main'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo "🔧 Installing dependencies..."
+                sh 'pip install -r requirements.txt || pip install pytest'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "✅ Running unit tests..."
+                sh 'pytest test_app.py'
+            }
+        }
+        stage('Deliver') {
+            steps {
+                echo "🚀 Deployment step (placeholder)..."
+                sh 'echo "Deployed!"'
+            }
+        }
+    }
+}
