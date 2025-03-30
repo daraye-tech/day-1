@@ -7,8 +7,8 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "node-app"
-        IMAGE_TAG = "latest"
+    IMAGE_NAME = "node-app"
+    IMAGE_TAG = "build-${BUILD_NUMBER}"
     }
 
     stages {
@@ -25,10 +25,12 @@ pipeline {
             steps {
                 echo "🐳 Building Docker image..."
                 dir('node-app') {
-                    sh '''
-                        docker build -t $IMAGE_NAME:$IMAGE_TAG .
-                        docker image ls
-                    '''
+                    withEnv(["IMAGE_NAME=${IMAGE_NAME}", "IMAGE_TAG=${IMAGE_TAG}"]) {
+                        sh '''
+                            docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                            docker image ls
+                        '''
+                    }
                 }
             }
         }
@@ -37,7 +39,14 @@ pipeline {
             steps {
                 echo "✅ Running unit tests..."
                 dir('node-app') {
-                    sh 'npm test || echo "⚠️ No tests yet, skipping..."'
+                    sh '''
+                        if [ -f package.json ]; then
+                            npm test
+                        else
+                            echo "⚠️ No tests found, failing the pipeline."
+                            exit 1
+                        fi
+                    '''
                 }
             }
         }
@@ -47,6 +56,22 @@ pipeline {
                 echo "🚀 Deployment step (placeholder)..."
                 sh 'echo "Deployed!"'
             }
+        }
+
+        stage('Clean Up') {
+            steps {
+                echo "🧹 Cleaning up unused Docker images..."
+                sh 'docker image prune -f'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Build and deployment successful!'
+        }
+        failure {
+            echo '❌ Build failed. Check the logs.'
         }
     }
 }
