@@ -11,5 +11,5 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-# Comand to run the app
-CMD [ "npm", "app.js" ]
+# Command to run the app
+CMD [ "node", "app.js" ]
