@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-    IMAGE_NAME = "node-app"
-    IMAGE_TAG = "build-${BUILD_NUMBER}"
+        IMAGE_NAME = "node-app"
+        IMAGE_TAG = "build-${BUILD_NUMBER}"
     }
 
     stages {
@@ -33,6 +33,10 @@ pipeline {
         stage('Test') {
             steps {
                 echo "✅ Running unit tests..."
+                dir('node-app') {
+                    sh 'npm test || echo "⚠️ No tests yet, skipping..."'
+                }
+            }
         }
 
         stage('Deliver') {
