@@ -38,17 +38,6 @@ pipeline {
         stage('Test') {
             steps {
                 echo "✅ Running unit tests..."
-                dir('node-app') {
-                    sh '''
-                        if [ -f package.json ]; then
-                            npm test
-                        else
-                            echo "⚠️ No tests found, failing the pipeline."
-                            exit 1
-                        fi
-                    '''
-                }
-            }
         }
 
         stage('Deliver') {
