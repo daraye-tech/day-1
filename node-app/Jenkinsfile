@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "node-app"
+        IMAGE_TAG = "latest"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "🔧 Setting up Node.js environment and installing dependencies..."
+                dir('node-app') {
+                    sh '''
+                        npm install
+                    '''
+                }
+            }
+        }
+        stage('Build docker image') {
+            steps {
+                echo "🔧 Building Docker image"
+                dir('node-app') {
+                    sh '''
+                        docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                        docker image ls
+                    '''
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "✅ Running unit tests..."
+                dir('node-app') {
+                    sh '''
+                        npm test
+                    '''
+                }
+            }
+        }
+        stage('Deliver') {
+            steps {
+                echo "🚀 Deployment step (placeholder)..."
+                sh 'echo "Deployed!"'
+            }
+        }
+    }
+}
